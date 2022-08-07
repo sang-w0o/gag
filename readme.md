@@ -17,6 +17,8 @@
 
 ### Examples
 
+> You can see more example codes using Gag in [examples](https://github.com/sang-w0o/gag/tree/master/examples).
+
 #### Simple Routing
 
 ```go
