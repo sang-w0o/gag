@@ -125,7 +125,7 @@ func configureMuxHandlers(c *Condition) *gorillaMux.Router {
 				if c.routeRequest.PassRequestBody {
 					defer r.Body.Close()
 					reqBody := r.Body
-					req, err := http.NewRequest(c.routeRequest.HttpMethod, c.routeRequest.Url, reqBody)
+					req, err := http.NewRequestWithContext(r.Context(), c.routeRequest.HttpMethod, c.routeRequest.Url, reqBody)
 					if err != nil {
 						w.WriteHeader(http.StatusInternalServerError)
 						w.Write([]byte(err.Error()))
@@ -150,7 +150,7 @@ func configureMuxHandlers(c *Condition) *gorillaMux.Router {
 					w.Write(bodyBytes)
 					return
 				} else {
-					req, err := http.NewRequest(c.routeRequest.HttpMethod, c.routeRequest.Url, nil)
+					req, err := http.NewRequestWithContext(r.Context(), c.routeRequest.HttpMethod, c.routeRequest.Url, nil)
 					if err != nil {
 						w.WriteHeader(http.StatusInternalServerError)
 						w.Write([]byte(err.Error()))
@@ -185,7 +185,7 @@ func configureMuxHandlers(c *Condition) *gorillaMux.Router {
 				if c.routeRequest.PassRequestBody {
 					defer r.Body.Close()
 					reqBody := r.Body
-					req, err := http.NewRequest(c.routeRequest.HttpMethod, c.routeRequest.Url, reqBody)
+					req, err := http.NewRequestWithContext(r.Context(), c.routeRequest.HttpMethod, c.routeRequest.Url, reqBody)
 					if err != nil {
 						w.WriteHeader(http.StatusInternalServerError)
 						w.Write([]byte(err.Error()))
@@ -210,7 +210,7 @@ func configureMuxHandlers(c *Condition) *gorillaMux.Router {
 					w.Write(bodyBytes)
 					return
 				} else {
-					req, err := http.NewRequest(c.routeRequest.HttpMethod, c.routeRequest.Url, nil)
+					req, err := http.NewRequestWithContext(r.Context(), c.routeRequest.HttpMethod, c.routeRequest.Url, nil)
 					if err != nil {
 						w.WriteHeader(http.StatusInternalServerError)
 						w.Write([]byte(err.Error()))
