@@ -113,7 +113,6 @@ func (g *Gag) configureHandler() {
 }
 
 func configureMuxHandlers(c *Condition) *gorillaMux.Router {
-	//mux := http.NewServeMux()
 	mux := gorillaMux.NewRouter()
 	var h http.Handler
 	if len(c.middlewares.middlewares) > 0 {
