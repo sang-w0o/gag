@@ -243,6 +243,8 @@ func configureMuxHandlers(c *Condition) *gorillaMux.Router {
 				if c.headerValue != nil {
 					if values, ok := r.Header[c.headerValue.Key]; hasHeaderValue(c.headerValue.Value, values) && ok {
 						h.ServeHTTP(w, r)
+					} else {
+						respond400BadHeaderValue(w, c.headerValue)
 					}
 				} else {
 					h.ServeHTTP(w, r)
@@ -251,11 +253,17 @@ func configureMuxHandlers(c *Condition) *gorillaMux.Router {
 				if c.headerValue != nil {
 					if values := r.Header[c.headerValue.Key]; hasHeaderValue(c.headerValue.Value, values) {
 						h.ServeHTTP(w, r)
+					} else {
+						respond400BadHeaderValue(w, c.headerValue)
 					}
 				} else {
 					h.ServeHTTP(w, r)
 				}
+			} else {
+				respond400BadHeader(w, c.header)
 			}
+		} else {
+			respond405(w, r.Method)
 		}
 	})
 	return mux
@@ -268,4 +276,19 @@ func hasHeaderValue(value string, values []string) bool {
 		}
 	}
 	return false
+}
+
+func respond405(w http.ResponseWriter, method string) {
+	w.WriteHeader(http.StatusMethodNotAllowed)
+	w.Write([]byte(fmt.Sprintf("405 method(%s) not allowed", method)))
+}
+
+func respond400BadHeader(w http.ResponseWriter, header string) {
+	w.WriteHeader(http.StatusBadRequest)
+	w.Write([]byte(fmt.Sprintf("400 header(%s) not provided", header)))
+}
+
+func respond400BadHeaderValue(w http.ResponseWriter, hv *headerValue) {
+	w.WriteHeader(http.StatusBadRequest)
+	w.Write([]byte(fmt.Sprintf("400 header(%s) with value(%s) not provided", hv.Key, hv.Value)))
 }
