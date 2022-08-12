@@ -34,8 +34,8 @@ type Condition struct {
 	// headerValue represents a key-value pair of request header.
 	// If not set, whether the header key exists and has the same value will not be checked.
 	// If set, only the request having the same header key along with header value will be handled.
-	// Configure headerValue using Condition.HasHeaderValue() method.
-	headerValue *HeaderValue
+	// headerValue is configured when Condition.HasHeaderValue() method is called.
+	headerValue *headerValue
 	// path represents the path of the request.
 	// It should be always be set, otherwise the request will not be handled.
 	// Requests matching the path will be handled.
@@ -49,12 +49,6 @@ type Condition struct {
 	middlewares middlewareChain
 }
 
-// HeaderValue represents a key-value pair of request header.
-type HeaderValue struct {
-	Key   string
-	Value string
-}
-
 // RouteRequest contains all properties about where and how the request will be routed.
 type RouteRequest struct {
 	// Url is the url that the request will be routed to.
@@ -65,6 +59,11 @@ type RouteRequest struct {
 	Timeout time.Duration
 	// PassRequestBody determines whether the request body will be sent to the Url.
 	PassRequestBody bool
+}
+
+type headerValue struct {
+	Key   string
+	Value string
 }
 
 // Method sets Condition's httpMethod property.
@@ -103,7 +102,7 @@ func (c *Condition) HasHeader(header string) *Condition {
 // Example:
 //  g.Condition().Path("/foo").HasHeaderValue("X-My-Header", "my-value").Route(...)
 func (c *Condition) HasHeaderValue(key string, value string) *Condition {
-	c.headerValue = &HeaderValue{key, value}
+	c.headerValue = &headerValue{key, value}
 	return c
 }
 
