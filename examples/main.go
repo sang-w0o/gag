@@ -90,7 +90,7 @@ func main() {
 	g.Conditions().
 		Path("/a").Method(http.MethodGet).Route(&gag.RouteRequest{Url: "/route-to", HttpMethod: http.MethodGet}, g).
 		Path("/b").Method(http.MethodGet).HasHeader("X-Header-Key").Route(&gag.RouteRequest{Url: "/route-to", HttpMethod: http.MethodGet}, g).
-		Path("/c").Method(http.MethodGet).HasHeaderValue("X-Key", "someValue").Route(&gag.RouteRequest{Url: "/route-to", HttpMethod: http.MethodGet}, g).
+		Path("/c").Method(http.MethodGet).HasHeaderValue("X-Key", "someValue").HandlerFunc(sampleHandler(), g).
 		Path("/d").Method(http.MethodPost).Route(&gag.RouteRequest{Url: "/route-to-handle", HttpMethod: http.MethodPost}, g).
 		Path("/e").Middlewares(TerribleSecurityProvider("some"), sampleTimingMiddleware()).HandlerFunc(sampleHandler(), g).
 		Path("/f").Middlewares(sampleTimingMiddleware(), TerribleSecurityProvider("some")).HandlerFunc(sampleHandler(), g).
