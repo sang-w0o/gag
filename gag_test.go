@@ -68,25 +68,13 @@ func TestCorrectHttpMethodHandlingSuccess(t *testing.T) {
 		return
 	}
 
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusOK {
-		t.Errorf("expected status code %d, got %d", http.StatusOK, res.StatusCode)
+	if err := validateResponse(t, res, http.StatusOK, `{"message":"sample handler!"}`); err != nil {
+		t.Error(err)
 		return
 	}
 
 	if res.Header["Content-Type"][0] != "application/json" {
 		t.Errorf("expected content type %s, got %s", "application/json", res.Header["Content-Type"][0])
-		return
-	}
-
-	respBody, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		t.Errorf("error reading response body: %v", err)
-		return
-	}
-
-	if string(respBody) != `{"message":"sample handler!"}` {
-		t.Errorf("expected response body %s, got %s", `{"message":"sample handler!"}`, string(respBody))
 		return
 	}
 }
@@ -104,25 +92,13 @@ func TestWrongHttpMethodResponse405(t *testing.T) {
 		return
 	}
 
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusMethodNotAllowed {
-		t.Errorf("expected status code %d, got %d", http.StatusMethodNotAllowed, res.StatusCode)
+	if err := validateResponse(t, res, http.StatusMethodNotAllowed, "405 method(GET) not allowed"); err != nil {
+		t.Error(err)
 		return
 	}
 
 	if res.Header["Content-Type"][0] != "text/plain; charset=utf-8" {
 		t.Errorf("expected content type %s, got %s", "text/plain; charset=utf-8", res.Header["Content-Type"][0])
-		return
-	}
-
-	respBody, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		t.Errorf("error reading response body: %v", err)
-		return
-	}
-
-	if string(respBody) != "405 method(GET) not allowed" {
-		t.Errorf("expected response body %s, got %s", "405 method(%s) not allowed", string(respBody))
 		return
 	}
 }
@@ -141,25 +117,13 @@ func TestCorrectHeaderHandlingSuccess(t *testing.T) {
 		return
 	}
 
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusOK {
-		t.Errorf("expected status code %d, got %d", http.StatusOK, res.StatusCode)
+	if err := validateResponse(t, res, http.StatusOK, `{"message":"sample handler!"}`); err != nil {
+		t.Error(err)
 		return
 	}
 
 	if res.Header["Content-Type"][0] != "application/json" {
 		t.Errorf("expected content type %s, got %s", "application/json", res.Header["Content-Type"][0])
-		return
-	}
-
-	respBody, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		t.Errorf("error reading response body: %v", err)
-		return
-	}
-
-	if string(respBody) != `{"message":"sample handler!"}` {
-		t.Errorf("expected response body %s, got %s", `{"message":"sample handler!"}`, string(respBody))
 		return
 	}
 }
@@ -177,25 +141,13 @@ func TestWrongHeaderResponse400(t *testing.T) {
 		return
 	}
 
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusBadRequest {
-		t.Errorf("expected status code %d, got %d", http.StatusBadRequest, res.StatusCode)
+	if err := validateResponse(t, res, http.StatusBadRequest, "400 header(X-Key) not provided"); err != nil {
+		t.Error(err)
 		return
 	}
 
 	if res.Header["Content-Type"][0] != "text/plain; charset=utf-8" {
 		t.Errorf("expected content type %s, got %s", "text/plain; charset=utf-8", res.Header["Content-Type"][0])
-		return
-	}
-
-	respBody, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		t.Errorf("error reading response body: %v", err)
-		return
-	}
-
-	if string(respBody) != "400 header(X-Key) not provided" {
-		t.Errorf("expected response body %s, got %s", "400 header(X-Key) not provided", string(respBody))
 		return
 	}
 }
@@ -214,25 +166,13 @@ func TestCorrectHeaderValueHandlingSuccess(t *testing.T) {
 		return
 	}
 
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusOK {
-		t.Errorf("expected status code %d, got %d", http.StatusOK, res.StatusCode)
+	if err := validateResponse(t, res, http.StatusOK, `{"message":"sample handler!"}`); err != nil {
+		t.Error(err)
 		return
 	}
 
 	if res.Header["Content-Type"][0] != "application/json" {
 		t.Errorf("expected content type %s, got %s", "application/json", res.Header["Content-Type"][0])
-		return
-	}
-
-	respBody, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		t.Errorf("error reading response body: %v", err)
-		return
-	}
-
-	if string(respBody) != `{"message":"sample handler!"}` {
-		t.Errorf("expected response body %s, got %s", `{"message":"sample handler!"}`, string(respBody))
 		return
 	}
 }
@@ -251,25 +191,13 @@ func TestWrongHeaderValueResponse400(t *testing.T) {
 		return
 	}
 
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusBadRequest {
-		t.Errorf("expected status code %d, got %d", http.StatusBadRequest, res.StatusCode)
+	if err := validateResponse(t, res, http.StatusBadRequest, "400 header(X-Key) with value(someValue) not provided"); err != nil {
+		t.Error(err)
 		return
 	}
 
 	if res.Header["Content-Type"][0] != "text/plain; charset=utf-8" {
 		t.Errorf("expected content type %s, got %s", "text/plain; charset=utf-8", res.Header["Content-Type"][0])
-		return
-	}
-
-	respBody, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		t.Errorf("error reading response body: %v", err)
-		return
-	}
-
-	if string(respBody) != "400 header(X-Key) with value(someValue) not provided" {
-		t.Errorf("expected response body %s, got %s", "400 header(X-Key) with value(someValue) not provided", string(respBody))
 		return
 	}
 }
@@ -289,25 +217,13 @@ func TestCorrectHeaderAndHeaderValueHandlingSuccess(t *testing.T) {
 		return
 	}
 
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusOK {
-		t.Errorf("expected status code %d, got %d", http.StatusOK, res.StatusCode)
+	if err := validateResponse(t, res, http.StatusOK, `{"message":"sample handler!"}`); err != nil {
+		t.Error(err)
 		return
 	}
 
 	if res.Header["Content-Type"][0] != "application/json" {
 		t.Errorf("expected content type %s, got %s", "application/json", res.Header["Content-Type"][0])
-		return
-	}
-
-	respBody, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		t.Errorf("error reading response body: %v", err)
-		return
-	}
-
-	if string(respBody) != `{"message":"sample handler!"}` {
-		t.Errorf("expected response body %s, got %s", `{"message":"sample handler!"}`, string(respBody))
 		return
 	}
 }
@@ -326,25 +242,13 @@ func TestWrongHeaderWhenHeaderAndHeaderValueResponse400(t *testing.T) {
 		return
 	}
 
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusBadRequest {
-		t.Errorf("expected status code %d, got %d", http.StatusBadRequest, res.StatusCode)
+	if err := validateResponse(t, res, http.StatusBadRequest, "400 header(X-Key) not provided"); err != nil {
+		t.Error(err)
 		return
 	}
 
 	if res.Header["Content-Type"][0] != "text/plain; charset=utf-8" {
 		t.Errorf("expected content type %s, got %s", "text/plain; charset=utf-8", res.Header["Content-Type"][0])
-		return
-	}
-
-	respBody, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		t.Errorf("error reading response body: %v", err)
-		return
-	}
-
-	if string(respBody) != "400 header(X-Key) not provided" {
-		t.Errorf("expected response body %s, got %s", "400 header(X-Key) not provided", string(respBody))
 		return
 	}
 }
@@ -363,9 +267,8 @@ func TestWrongHeaderValueWhenHeaderAndHeaderValueResponse400(t *testing.T) {
 		return
 	}
 
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusBadRequest {
-		t.Errorf("expected status code %d, got %d", http.StatusBadRequest, res.StatusCode)
+	if err := validateResponse(t, res, http.StatusBadRequest, "400 header(X-Key-Two) with value(someValue) not provided"); err != nil {
+		t.Error(err)
 		return
 	}
 
@@ -373,15 +276,23 @@ func TestWrongHeaderValueWhenHeaderAndHeaderValueResponse400(t *testing.T) {
 		t.Errorf("expected content type %s, got %s", "text/plain; charset=utf-8", res.Header["Content-Type"][0])
 		return
 	}
+}
 
-	respBody, err := ioutil.ReadAll(res.Body)
+func validateResponse(t *testing.T, r *http.Response, statusCode int, body string) error {
+	if r.StatusCode != statusCode {
+		return fmt.Errorf("expected status code %d, got %d", statusCode, r.StatusCode)
+	}
+
+	defer r.Body.Close()
+
+	respBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		t.Errorf("error reading response body: %v", err)
-		return
+		return fmt.Errorf("error reading response body: %v", err)
 	}
 
-	if string(respBody) != "400 header(X-Key-Two) with value(someValue) not provided" {
-		t.Errorf("expected response body %s, got %s", "400 header(X-Key-Two) with value(someValue) not provided", string(respBody))
-		return
+	if string(respBody) != body {
+		return fmt.Errorf("expected response body %s, got %s", body, string(respBody))
 	}
+
+	return nil
 }
