@@ -68,7 +68,7 @@ func TestCorrectHttpMethodHandlingSuccess(t *testing.T) {
 		return
 	}
 
-	if err := validateResponse(t, res, http.StatusOK, `{"message":"sample handler!"}`); err != nil {
+	if err := validateResponse(res, http.StatusOK, `{"message":"sample handler!"}`); err != nil {
 		t.Error(err)
 		return
 	}
@@ -92,7 +92,7 @@ func TestWrongHttpMethodResponse405(t *testing.T) {
 		return
 	}
 
-	if err := validateResponse(t, res, http.StatusMethodNotAllowed, "405 method(GET) not allowed"); err != nil {
+	if err := validateResponse(res, http.StatusMethodNotAllowed, "405 method(GET) not allowed"); err != nil {
 		t.Error(err)
 		return
 	}
@@ -117,7 +117,7 @@ func TestCorrectHeaderHandlingSuccess(t *testing.T) {
 		return
 	}
 
-	if err := validateResponse(t, res, http.StatusOK, `{"message":"sample handler!"}`); err != nil {
+	if err := validateResponse(res, http.StatusOK, `{"message":"sample handler!"}`); err != nil {
 		t.Error(err)
 		return
 	}
@@ -141,7 +141,7 @@ func TestWrongHeaderResponse400(t *testing.T) {
 		return
 	}
 
-	if err := validateResponse(t, res, http.StatusBadRequest, "400 header(X-Key) not provided"); err != nil {
+	if err := validateResponse(res, http.StatusBadRequest, "400 header(X-Key) not provided"); err != nil {
 		t.Error(err)
 		return
 	}
@@ -166,7 +166,7 @@ func TestCorrectHeaderValueHandlingSuccess(t *testing.T) {
 		return
 	}
 
-	if err := validateResponse(t, res, http.StatusOK, `{"message":"sample handler!"}`); err != nil {
+	if err := validateResponse(res, http.StatusOK, `{"message":"sample handler!"}`); err != nil {
 		t.Error(err)
 		return
 	}
@@ -191,7 +191,7 @@ func TestWrongHeaderValueResponse400(t *testing.T) {
 		return
 	}
 
-	if err := validateResponse(t, res, http.StatusBadRequest, "400 header(X-Key) with value(someValue) not provided"); err != nil {
+	if err := validateResponse(res, http.StatusBadRequest, "400 header(X-Key) with value(someValue) not provided"); err != nil {
 		t.Error(err)
 		return
 	}
@@ -217,7 +217,7 @@ func TestCorrectHeaderAndHeaderValueHandlingSuccess(t *testing.T) {
 		return
 	}
 
-	if err := validateResponse(t, res, http.StatusOK, `{"message":"sample handler!"}`); err != nil {
+	if err := validateResponse(res, http.StatusOK, `{"message":"sample handler!"}`); err != nil {
 		t.Error(err)
 		return
 	}
@@ -242,7 +242,7 @@ func TestWrongHeaderWhenHeaderAndHeaderValueResponse400(t *testing.T) {
 		return
 	}
 
-	if err := validateResponse(t, res, http.StatusBadRequest, "400 header(X-Key) not provided"); err != nil {
+	if err := validateResponse(res, http.StatusBadRequest, "400 header(X-Key) not provided"); err != nil {
 		t.Error(err)
 		return
 	}
@@ -267,7 +267,7 @@ func TestWrongHeaderValueWhenHeaderAndHeaderValueResponse400(t *testing.T) {
 		return
 	}
 
-	if err := validateResponse(t, res, http.StatusBadRequest, "400 header(X-Key-Two) with value(someValue) not provided"); err != nil {
+	if err := validateResponse(res, http.StatusBadRequest, "400 header(X-Key-Two) with value(someValue) not provided"); err != nil {
 		t.Error(err)
 		return
 	}
@@ -278,7 +278,7 @@ func TestWrongHeaderValueWhenHeaderAndHeaderValueResponse400(t *testing.T) {
 	}
 }
 
-func validateResponse(t *testing.T, r *http.Response, statusCode int, body string) error {
+func validateResponse(r *http.Response, statusCode int, body string) error {
 	if r.StatusCode != statusCode {
 		return fmt.Errorf("expected status code %d, got %d", statusCode, r.StatusCode)
 	}
