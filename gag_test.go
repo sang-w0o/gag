@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"sync"
 	"testing"
 )
 
@@ -30,6 +29,21 @@ func sampleHandler() http.HandlerFunc {
 var port uint16
 var c *http.Client
 
+func startGag(g *Gag) func() {
+	ch := make(chan struct{}, 1)
+	cancel := func() {
+		close(ch)
+	}
+	go func() {
+		err := g.Serve()
+		if err != nil {
+			panic(err)
+		}
+	}()
+	port = g.port
+	return cancel
+}
+
 func TestMain(m *testing.M) {
 	g := NewGag(Config{Port: 8080})
 	g.Conditions().
@@ -39,19 +53,10 @@ func TestMain(m *testing.M) {
 		Path("/d").Method(http.MethodGet).HasHeaderValue("X-Key", "someValue").HandlerFunc(sampleHandler(), g).
 		Path("/e").Method(http.MethodGet).HasHeader("X-Key").HasHeaderValue("X-Key-Two", "someValue").HandlerFunc(sampleHandler(), g)
 
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go func() {
-		err := g.Serve()
-		defer wg.Done()
-		if err != nil {
-			panic(err)
-		}
-	}()
-
-	port = g.port
+	cancel := startGag(g)
 	c = http.DefaultClient
 	exitVal := m.Run()
+	cancel()
 	os.Exit(exitVal)
 }
 
